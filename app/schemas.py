@@ -1,4 +1,4 @@
-# app/schemas.py
+
 from pydantic import BaseModel, EmailStr, field_validator
 from typing import List
 
@@ -9,7 +9,7 @@ class UserCreate(BaseModel):
     password: str
     skills:str
 
-    # Pydantic v2 replacement for @validator
+    
     @field_validator("password")
     def password_length(cls, v):
         if not (6 <= len(v) <= 72):
@@ -21,7 +21,7 @@ class UserOut(BaseModel):
     username: str
     email: EmailStr
 
-    model_config = {"from_attributes": True}  # Pydantic v2 uses model_config instead of Config
+    model_config = {"from_attributes": True}  
 
 class UserProfileCreate(BaseModel):
     username: str
@@ -54,7 +54,7 @@ class JobOut(BaseModel):
     description: str
     company: str
     location: str
-    skills_required: List[str]  # <-- change to List[str]
-    score: float  # optional if you want similarity score
+    skills_required: List[str] 
+    score: float  
 
     model_config = {"from_attributes": True}

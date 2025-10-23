@@ -13,13 +13,11 @@ router = APIRouter()
 # ------------ User ----------------
 @router.post("/register", response_model=UserOut)
 async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
-    # Check if user already exists
     result = await db.execute(select(User).where(User.email == user.email))
     existing_user = result.scalars().first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Create new user
     new_user = User(
         username=user.username,
         email=user.email,
@@ -42,7 +40,6 @@ async def login(user: UserCreate, db: AsyncSession = Depends(get_db)):
 # ------------ Job ----------------
 @router.post("/jobs", response_model=JobOut)
 async def create_job(job: JobCreate, db: AsyncSession = Depends(get_db)):
-    # Use model_dump() instead of dict() for Pydantic v2
     new_job = Job(**job.model_dump())
     db.add(new_job)
     await db.commit()
@@ -61,7 +58,6 @@ async def get_job_id(id:int,db:AsyncSession=Depends(get_db)):
 
 @router.post("/user_profile", response_model=UserProfileOut)
 async def create_user_profile(profile: UserProfileCreate, db: AsyncSession = Depends(get_db)):
-    # Check if username already exists
     result = await db.execute(select(Userprofile).where(Userprofile.username == profile.username))
     existing = result.scalars().first()
     if existing:
@@ -97,24 +93,23 @@ async def get_user_profile(id: int, db: AsyncSession = Depends(get_db)):
 
 @router.get("/recommendations/{user_id}", response_model=List[JobOut])
 async def get_recommendations(user_id: int, db: AsyncSession = Depends(get_db), top_n: int = 10):
-    # 1️⃣ Fetch user profile
     result = await db.execute(select(Userprofile).where(Userprofile.id == user_id))
     user = result.scalars().first()
     if not user:
         raise HTTPException(status_code=404, detail="User profile not found")
 
-    # 2️⃣ Preprocess user input
+    
     user_processed = preprocess_user_input(user.__dict__)
 
-    # 3️⃣ Fetch all jobs
+    
     result = await db.execute(select(Job))
     jobs = result.scalars().all()
 
-    # 4️⃣ Preprocess jobs
+    
     processed_jobs = [preprocess_job(job.__dict__) for job in jobs]
 
-    # 5️⃣ Rank jobs using vectorization
+    
     ranked_jobs = vectorize_and_rank(user_processed, processed_jobs)
 
-    # 6️⃣ Return top N
+    
     return ranked_jobs[:top_n]
