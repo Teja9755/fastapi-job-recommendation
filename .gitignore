@@ -1,0 +1,15 @@
+# Ignore Python virtual environment folders
+Lib/
+Scripts/
+Include/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Track all project files
+!.gitignore
+!app/
+!seed_job.py
+!dataprocessing_sample.py
+!requirements.txt
