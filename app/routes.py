@@ -97,19 +97,9 @@ async def get_recommendations(user_id: int, db: AsyncSession = Depends(get_db), 
     user = result.scalars().first()
     if not user:
         raise HTTPException(status_code=404, detail="User profile not found")
-
-    
     user_processed = preprocess_user_input(user.__dict__)
-
-    
     result = await db.execute(select(Job))
     jobs = result.scalars().all()
-
-    
     processed_jobs = [preprocess_job(job.__dict__) for job in jobs]
-
-    
     ranked_jobs = vectorize_and_rank(user_processed, processed_jobs)
-
-    
     return ranked_jobs[:top_n]
