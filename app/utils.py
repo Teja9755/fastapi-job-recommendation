@@ -39,7 +39,7 @@ def preprocess_job(job_data: Dict) -> Dict:
         "skills_required": preprocess_skills(job_data.get("skills_required", [])),
         "location": preprocess_location(job_data.get("location", "")),
         "description": job_data.get("description", "").lower(),
-        "company": job_data.get("company", "unknown")  # <-- ADD THIS
+        "company": job_data.get("company", "unknown")
     }  
 
 def vectorize_and_rank(user_data: Dict, jobs: List[Dict]) -> List[Dict]:
