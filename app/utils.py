@@ -67,3 +67,7 @@ def vectorize_and_rank(user_data: Dict, jobs: List[Dict]) -> List[Dict]:
     
     ranked_jobs = sorted(jobs, key=lambda x: x["score"], reverse=True)
     return ranked_jobs
+
+
+
+--Caching the details
