@@ -12,3 +12,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(router)
+
+
+//I have added the new files in the page
